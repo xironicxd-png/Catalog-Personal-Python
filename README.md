@@ -3,9 +3,9 @@ Un script Python simplu pentru gestionarea notelor și calcularea mediilor anual
 
 ## Caracteristici
 * Calcularea mediei aritmetice pentru fiecare materie.
-* Suport pentru materii cu teză (pondere 3/4).
 * Validarea automată a datelor introduse.
 * Generarea unui raport final cu media generală.
+* Varianta Simplified m-a ajutat personal si cred ca este perfecta pentru orice elev.
 
 ## Cum se rulează
 1. Asigură-te că ai Python instalat.
