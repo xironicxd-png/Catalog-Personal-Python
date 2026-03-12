@@ -1,0 +1,42 @@
+import math
+# Citim numărul de materii
+while True:
+    nr_materii = int(input("Câte materii ai? "))
+    if nr_materii < 1:
+        print("Invalid. Numărul de materii trebuie să fie cel puțin 1.")
+    else:
+        break
+suma_mediilor_rotunjite = 0
+corigente = 0
+for i in range(1, nr_materii + 1):
+    print(f"\n--- Materia {i} ---")
+    while True:
+        note_input = input("Introdu notele (separate prin spațiu): ")
+
+        try:
+            note = [int(n) for n in note_input.split()]
+        except ValueError:
+            print("Invalid. Introdu doar numere întregi.")
+            continue
+        if len(note) == 0 or any(n < 1 for n in note):
+            print("Invalid. Toate notele trebuie să fie mai mari ca 1.")
+        else:
+            break
+# calculăm media și o rotunjim
+    media_materie = math.floor(sum(note) / len(note) + 0.5)
+    print(f"Media rotunjită la această materie: {media_materie}")
+    suma_mediilor_rotunjite += media_materie
+    if media_materie < 5:
+        corigente += 1
+# media anuală
+media_anuala = suma_mediilor_rotunjite / nr_materii
+print("\n==============================")
+print(f"Media ta anuală este: {media_anuala:.2f}")
+print("==============================")
+print("\n==============================")
+print(f"Ești corigent la: {corigente} materii")
+print("==============================")
+if corigente >= 3:
+    print("\n==============================")
+    print("Ai rămas repetent")
+    print("==============================")
