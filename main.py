@@ -1,75 +1,46 @@
 import math
 
-def valideaza_nota(mesaj):
-    """Asigură introducerea unei note valide între 1 și 10."""
+PASSING_GRADE = 5
+MAX_FAILS_TO_REPEAT = 3
+
+def get_positive_int(prompt):
     while True:
         try:
-            nota = int(input(mesaj))
-            if 1 <= nota <= 10:
-                return nota
-            print("Eroare: Nota trebuie să fie între 1 și 10.")
+            value = int(input(prompt))
+            if value < 1:
+                print("Invalid. Must be at least 1.")
+                continue
+            return value
         except ValueError:
-            print("Eroare: Te rog introdu un număr întreg.")
+            print("Invalid. Enter a whole number.")
 
-def calculeaza_media_materie(note, nota_teza=None):
-    """Calculează media aritmetică sau media cu teză (pondere 3/4)."""
-    media_note = sum(note) / len(note)
-    
-    if nota_teza:
-        # Formula oficială: (Media_notelor * 3 + Teza) / 4
-        media_finala = (media_note * 3 + nota_teza) / 4
-    else:
-        media_finala = media_note
-        
-    # Rotunjire matematică (0.5 merge în sus)
-    return math.floor(media_finala + 0.5)
+def get_subject_average(subject_num):
+    print(f"\n--- Subject {subject_num} ---")
+    while True:
+        raw = input("Enter grades (separated by space): ")
+        try:
+            grades = [int(n) for n in raw.split()]
+        except ValueError:
+            print("Invalid. Enter only integers.")
+            continue
+        if not grades or any(g < 1 or g > 10 for g in grades):
+            print("Invalid. Grades must be between 1 and 10.")
+            continue
+        return math.floor(sum(grades) / len(grades) + 0.5)
 
 def main():
-    print("--- Sistem Gestiune Catalog Școlar ---")
-    catalog = {}
-    
-    numar_materii = int(input("Câte materii dorești să introduci? "))
+    nr_materii = get_positive_int("How many subjects do you have? ")
+    averages = [get_subject_average(i) for i in range(1, nr_materii + 1)]
 
-    for _ in range(numar_materii):
-        nume_materie = input("\nNumele materiei: ").strip().capitalize()
-        
-        # Citirea notelor
-        while True:
-            note_raw = input(f"Introdu notele la {nume_materie} (separate prin spațiu): ")
-            note = [int(n) for n in note_raw.split() if n.isdigit() and 1 <= int(n) <= 10]
-            if note:
-                break
-            print("Eroare: Trebuie să introduci cel puțin o notă validă.")
+    for i, avg in enumerate(averages, start=1):
+        print(f"Rounded average for subject {i}: {avg}")
 
-        # Verificare teză
-        are_teza = input("Are această materie teză? (da/nu): ").lower().strip()
-        teza = None
-        if are_teza == 'da':
-            teza = valideaza_nota(f"Nota la teza pentru {nume_materie}: ")
+    corigente = sum(1 for avg in averages if avg < PASSING_GRADE)
+    media_anuala = sum(averages) / nr_materii
 
-        # Calcul și salvare în catalog
-        media_rotunjita = calculeaza_media_materie(note, teza)
-        catalog[nume_materie] = {
-            "note": note,
-            "teza": teza,
-            "medie_finala": media_rotunjita
-        }
+    print(f"\nYearly average: {media_anuala:.2f}")
+    print(f"Subjects to retake: {corigente}")
+    if corigente >= MAX_FAILS_TO_REPEAT:
+        print("You must repeat the year")
 
-    # Afișare Raport Final
-    print("\n" + "="*40)
-    print(f"{'MATERIE':<15} | {'NOTE':<15} | {'TEZĂ':<5} | {'MEDIE'}")
-    print("-" * 40)
-    
-    suma_mediilor = 0
-    for materie, date in catalog.items():
-        teza_str = str(date['teza']) if date['teza'] else "-"
-        note_str = str(date['note'])
-        print(f"{materie:<15} | {note_str:<15} | {teza_str:<5} | {date['medie_finala']}")
-        suma_mediilor += date['medie_finala']
-
-    media_anuala = suma_mediilor / len(catalog)
-    print("-" * 40)
-    print(f"MEDIA ANUALĂ GENERALĂ: {media_anuala:.2f}")
-
-if __name__ == "__main__":
-    main()
+main()
